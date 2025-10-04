@@ -1,12 +1,22 @@
 [System.Serializable]
 public class Item
 {
-    public string itemName;
+    public enum ItemType
+    {
+        Bois,
+        Pierre,
+        Métal,
+        Nourriture,
+        Or,
+        Potion
+    }
+
+    public ItemType type;
     public int quantity;
 
-    public Item(string name, int qty)
+    public Item(ItemType itemType, int qty)
     {
-        itemName = name;
+        type = itemType;
         quantity = qty;
     }
 }
