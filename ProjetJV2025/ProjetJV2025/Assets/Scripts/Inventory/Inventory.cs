@@ -5,9 +5,9 @@ public class Inventory : MonoBehaviour
 {
     public List<Item> items = new List<Item>();
 
-    public void AddItem(string name, int qty)
+    public void AddItem(Item.ItemType type, int qty)
     {
-        Item existingItem = items.Find(i => i.itemName == name);
+        Item existingItem = items.Find(i => i.type == type);
 
         if (existingItem != null)
         {
@@ -15,15 +15,15 @@ public class Inventory : MonoBehaviour
         }
         else
         {
-            items.Add(new Item(name, qty));
+            items.Add(new Item(type, qty));
         }
 
         PrintInventory();
     }
 
-    public void RemoveItem(string name, int qty)
+    public void RemoveItem(Item.ItemType type, int qty)
     {
-        Item item = items.Find(i => i.itemName == name);
+        Item item = items.Find(i => i.type == type);
 
         if (item != null)
         {
@@ -43,7 +43,7 @@ public class Inventory : MonoBehaviour
         Debug.Log("📦 Inventaire :");
         foreach (var item in items)
         {
-            Debug.Log($"{item.itemName} x{item.quantity}");
+            Debug.Log($"{item.type} x{item.quantity}");
         }
     }
 }
