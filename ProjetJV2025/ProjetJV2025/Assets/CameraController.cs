@@ -15,11 +15,11 @@ public class CameraController : MonoBehaviour
             // Rotate camera with Q and E
             if (Input.GetKeyDown(KeyCode.Q))
             {
-                currentRotation -= rotationSpeed;
+                currentRotation += rotationSpeed;
             }
             if (Input.GetKeyDown(KeyCode.E))
             {
-                currentRotation += rotationSpeed;
+                currentRotation -= rotationSpeed;
             }
             
             // Apply rotation to offset

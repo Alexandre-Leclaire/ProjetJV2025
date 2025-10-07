@@ -3,6 +3,17 @@ using TMPro;
 
 public class Interactable : MonoBehaviour
 {
+    public GameObject interactIndicator; // The canvas/UI indicator
+    
+    void Start()
+    {
+        // Hide indicator on start
+        if (interactIndicator != null)
+        {
+            interactIndicator.SetActive(false);
+        }
+    }
+    
     public virtual void Interact()
     {
         Debug.Log("Interacted with " + gameObject.name);
@@ -10,11 +21,17 @@ public class Interactable : MonoBehaviour
     
     public virtual void OnPlayerEnter()
     {
-        // Override this in child classes to show UI
+        if (interactIndicator != null)
+        {
+            interactIndicator.SetActive(true);
+        }
     }
     
     public virtual void OnPlayerExit()
     {
-        // Override this in child classes to hide UI
+        if (interactIndicator != null)
+        {
+            interactIndicator.SetActive(false);
+        }
     }
 }
