@@ -1,21 +1,30 @@
 using UnityEngine;
+using System.Collections;
 
 public class MainMenuCameraMouvement : MonoBehaviour
 {
-    Animator animator;
+    public float moveSpeed;
+    public float rotationSpeed;
 
-    private void Start()
+    public void GoTo(Transform destination)
     {
-        animator = GetComponent<Animator>();
-    }
-    public void ChangeAnimation(string name)
-    {
-        animator.SetFloat("speed", 1);
-        animator.Play(name);
+        StopAllCoroutines();
+        StartCoroutine(GoToPosition(destination));
     }
 
-    public void Reverse()
+    private IEnumerator GoToPosition(Transform destination)
     {
-        animator.SetFloat("speed", -1);
+        float distance = Vector3.Distance(transform.position, destination.position);
+        float angleDistance = Vector3.Distance(transform.forward, destination.forward);
+
+        while (destination.position != transform.position || destination.rotation != transform.rotation)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, destination.position, Time.deltaTime * distance);
+
+            Vector3 targetDirection = destination.position - transform.position;
+            transform.rotation = Quaternion.LookRotation(Vector3.RotateTowards(transform.forward, destination.forward, Time.deltaTime * angleDistance, 0.0f));
+
+            yield return new WaitForEndOfFrame();
+        }
     }
 }
