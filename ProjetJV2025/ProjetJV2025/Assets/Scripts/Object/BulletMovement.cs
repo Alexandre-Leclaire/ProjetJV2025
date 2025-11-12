@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 public class BulletMovement : MonoBehaviour
@@ -13,6 +12,12 @@ public class BulletMovement : MonoBehaviour
         _startPosition = transform.position;
     }
 
+    public void Init(float speed, float maxDistance)
+    {
+        this.speed = speed;
+        this.maxDistance = maxDistance;
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -21,10 +26,10 @@ public class BulletMovement : MonoBehaviour
             Destroy(gameObject);
         }
         
-        transform.Translate(Vector3.forward * speed * Time.deltaTime);
+        transform.Translate(Vector3.forward * (speed * Time.deltaTime));
     }
 
-    private void OnCollisionEnter(Collision other)
+    private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Player"))
         {

@@ -10,7 +10,8 @@ public class Enemie : MonoBehaviour, IAiEntity
     [SerializeField] private float shootRange;
     [SerializeField] private float shootTime;
     [SerializeField] private GameObject player;
-    [SerializeField] private GameObject bulletPrefab;
+    [SerializeField] private BulletMovement bulletPrefab;
+    [SerializeField] private GameObject laserObject;
     
     private Vector3 startPosition;
     private NavMeshAgent agent;
@@ -32,6 +33,11 @@ public class Enemie : MonoBehaviour, IAiEntity
         {
             player = GameObject.FindGameObjectWithTag("Player");
         }
+        
+        bulletPrefab.Init(10, shootRange);
+
+        laserObject.transform.localScale = new Vector3(0.1f, 0.1f, shootRange);
+        laserObject.transform.localPosition = new Vector3(0, 0, (shootRange / 2) + 0.5f);
     }
 
     // Update is called once per frame
@@ -128,6 +134,7 @@ public class Enemie : MonoBehaviour, IAiEntity
             enemie.Agent.isStopped = true;
             this.shootTimer = shootTimer;
             this.entity = enemie;
+            entity.laserObject.SetActive(true);
         }
 
         void IState.Execute()
@@ -136,6 +143,7 @@ public class Enemie : MonoBehaviour, IAiEntity
             {
                 Instantiate(entity.bulletPrefab, entity.transform.position, entity.transform.rotation);
                 entity.Agent.isStopped = false;
+                entity.laserObject.SetActive(false);
                 entity.State = new ChaseState(entity);
             }
             else
