@@ -2,8 +2,9 @@ using UnityEngine;
 
 public class BulletMovement : MonoBehaviour
 {
-    [SerializeField] private float speed;
-    [SerializeField] private float maxDistance;
+    private float speed;
+    private float maxDistance;
+    private int damage;
     
     private Vector3 _startPosition;
 
@@ -12,14 +13,15 @@ public class BulletMovement : MonoBehaviour
         _startPosition = transform.position;
     }
 
-    public void Init(float speed, float maxDistance)
+    public void Init(float speed, float maxDistance, int damage)
     {
         this.speed = speed;
         this.maxDistance = maxDistance;
+        this.damage = damage;
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         if (Vector3.Distance(transform.position, _startPosition) > maxDistance)
         {
@@ -31,9 +33,10 @@ public class BulletMovement : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Player"))
+        if (other.TryGetComponent(out IDamageable damageable))
         {
-            Debug.Log("Hit Player");
+            Debug.Log("Hit");
+            damageable.TakeDamage(damage);
             Destroy(gameObject);
         }
     }

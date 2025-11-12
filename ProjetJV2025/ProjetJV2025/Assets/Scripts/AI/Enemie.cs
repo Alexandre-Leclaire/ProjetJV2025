@@ -2,30 +2,30 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Enemie : MonoBehaviour, IAiEntity
+public class Enemie : MonoBehaviour, IAiEntity, IDamageable
 {
     [SerializeField] private float patrolRadius;
     [SerializeField] private float vision;
-    [SerializeField] [Range (0f, 180f)]private float visionAngle;
+    [SerializeField] [Range (0f, 180f)] private float visionAngle;
     [SerializeField] private float shootRange;
     [SerializeField] private float shootTime;
+    [SerializeField] private int damage;
+    [SerializeField] private int hp;
     [SerializeField] private GameObject player;
     [SerializeField] private BulletMovement bulletPrefab;
     [SerializeField] private GameObject laserObject;
     
     private Vector3 startPosition;
-    private NavMeshAgent agent;
-    private IState state;
 
-    public NavMeshAgent Agent => agent;
+    public NavMeshAgent Agent { get; private set; }
 
-    public IState State { get => state; set => state = value; }
+    public IState State { get; set; }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Start()
     {
         startPosition = transform.position;
-        agent = GetComponent<NavMeshAgent>();
+        Agent = GetComponent<NavMeshAgent>();
         Agent.SetDestination(transform.position);
         State = new PatrolState(this);
 
@@ -34,7 +34,7 @@ public class Enemie : MonoBehaviour, IAiEntity
             player = GameObject.FindGameObjectWithTag("Player");
         }
         
-        bulletPrefab.Init(10, shootRange);
+        bulletPrefab.Init(10, shootRange, damage);
 
         laserObject.transform.localScale = new Vector3(0.1f, 0.1f, shootRange);
         laserObject.transform.localPosition = new Vector3(0, 0, (shootRange / 2) + 0.5f);
@@ -45,14 +45,22 @@ public class Enemie : MonoBehaviour, IAiEntity
     {
         State.Execute();
     }
-    
-    private Vector3 RandomNavmeshLocation(float radius) {
 
+    void IDamageable.TakeDamage(int damageTaken)
+    {
+        hp -= damageTaken;
+        if (hp <= 0)
+        {
+            Destroy(gameObject);
+        }
+    }
+    
+    private Vector3 RandomNavmeshLocation(float radius) 
+    {
         Vector3 randomDirection = Random.insideUnitSphere * radius;
         randomDirection += startPosition;
-        NavMeshHit hit;
         Vector3 finalPosition = Vector3.zero;
-        if (NavMesh.SamplePosition(randomDirection, out hit, radius, 1)) {
+        if (NavMesh.SamplePosition(randomDirection, out var hit, radius, 1)) {
             finalPosition = hit.position;            
         }
         return finalPosition;
@@ -62,7 +70,6 @@ public class Enemie : MonoBehaviour, IAiEntity
     {
         Vector3 playerDirection = player.transform.position - transform.position;
 
-        // Debug.Log($"Distance: {Vector3.Distance(transform.position, player.transform.position)}, Angle: {Vector3.Angle(playerDirection, transform.forward)}");
         return Vector3.Distance(transform.position, player.transform.position) <= vision &&
                Vector3.Angle(playerDirection, transform.forward) <= visionAngle &&
                Physics.Raycast(transform.position, playerDirection, out var hit, vision) &&
@@ -76,7 +83,6 @@ public class Enemie : MonoBehaviour, IAiEntity
         
         public PatrolState(Enemie enemie)
         {
-            // Debug.Log("Patrol");
             enemie.Agent.stoppingDistance = 0;
             this.enemie = enemie;
         }
@@ -85,7 +91,7 @@ public class Enemie : MonoBehaviour, IAiEntity
             if (enemie.HavePlayerInVision())
             {
                 enemie.Agent.SetDestination(enemie.player.transform.position);
-                enemie.state = new ChaseState(enemie);
+                enemie.State = new ChaseState(enemie);
             }
             else if (enemie.Agent.remainingDistance <= 0.1f)
             {
@@ -100,7 +106,6 @@ public class Enemie : MonoBehaviour, IAiEntity
 
         public ChaseState(Enemie enemie)
         {
-            // Debug.Log("Chase");
             this.enemie = enemie;
 
             enemie.Agent.stoppingDistance = enemie.shootRange;
@@ -129,7 +134,6 @@ public class Enemie : MonoBehaviour, IAiEntity
         private float shootTimer;
         public ShootState(Enemie enemie, float shootTimer)
         {
-            // Debug.Log("Shoot");
             enemie.transform.LookAt(enemie.player.transform);
             enemie.Agent.isStopped = true;
             this.shootTimer = shootTimer;
@@ -143,8 +147,16 @@ public class Enemie : MonoBehaviour, IAiEntity
             {
                 Instantiate(entity.bulletPrefab, entity.transform.position, entity.transform.rotation);
                 entity.Agent.isStopped = false;
-                entity.laserObject.SetActive(false);
-                entity.State = new ChaseState(entity);
+
+                if (entity.HavePlayerInVision())
+                {
+                    shootTimer = entity.shootTime;
+                }
+                else
+                {
+                    entity.laserObject.SetActive(false);
+                    entity.State = new ChaseState(entity);
+                }
             }
             else
             {
