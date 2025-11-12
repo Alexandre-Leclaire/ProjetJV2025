@@ -10,6 +10,7 @@ public class Enemie : MonoBehaviour, IAiEntity
     [SerializeField] private float shootRange;
     [SerializeField] private float shootTime;
     [SerializeField] private GameObject player;
+    [SerializeField] private GameObject bulletPrefab;
     
     private Vector3 startPosition;
     private NavMeshAgent agent;
@@ -36,8 +37,7 @@ public class Enemie : MonoBehaviour, IAiEntity
     // Update is called once per frame
     private void Update()
     {
-        Debug.Log(HavePlayerInVision());
-        // State.Execute();
+        State.Execute();
     }
     
     private Vector3 RandomNavmeshLocation(float radius) {
@@ -56,7 +56,7 @@ public class Enemie : MonoBehaviour, IAiEntity
     {
         Vector3 playerDirection = player.transform.position - transform.position;
 
-        Debug.Log($"Distance: {Vector3.Distance(transform.position, player.transform.position)}, Angle: {Vector3.Angle(playerDirection, transform.forward)}");
+        // Debug.Log($"Distance: {Vector3.Distance(transform.position, player.transform.position)}, Angle: {Vector3.Angle(playerDirection, transform.forward)}");
         return Vector3.Distance(transform.position, player.transform.position) <= vision &&
                Vector3.Angle(playerDirection, transform.forward) <= visionAngle &&
                Physics.Raycast(transform.position, playerDirection, out var hit, vision) &&
@@ -70,7 +70,7 @@ public class Enemie : MonoBehaviour, IAiEntity
         
         public PatrolState(Enemie enemie)
         {
-            Debug.Log("Patrol");
+            // Debug.Log("Patrol");
             enemie.Agent.stoppingDistance = 0;
             this.enemie = enemie;
         }
@@ -94,7 +94,7 @@ public class Enemie : MonoBehaviour, IAiEntity
 
         public ChaseState(Enemie enemie)
         {
-            Debug.Log("Chase");
+            // Debug.Log("Chase");
             this.enemie = enemie;
 
             enemie.Agent.stoppingDistance = enemie.shootRange;
@@ -123,7 +123,8 @@ public class Enemie : MonoBehaviour, IAiEntity
         private float shootTimer;
         public ShootState(Enemie enemie, float shootTimer)
         {
-            Debug.Log("Shoot");
+            // Debug.Log("Shoot");
+            enemie.transform.LookAt(enemie.player.transform);
             enemie.Agent.isStopped = true;
             this.shootTimer = shootTimer;
             this.entity = enemie;
@@ -133,7 +134,7 @@ public class Enemie : MonoBehaviour, IAiEntity
         {
             if (shootTimer <= 0)
             {
-                Debug.Log("PIOU!");
+                Instantiate(entity.bulletPrefab, entity.transform.position, entity.transform.rotation);
                 entity.Agent.isStopped = false;
                 entity.State = new ChaseState(entity);
             }
