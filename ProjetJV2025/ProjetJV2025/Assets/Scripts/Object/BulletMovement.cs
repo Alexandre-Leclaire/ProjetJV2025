@@ -1,10 +1,11 @@
+using System;
 using UnityEngine;
 
 public class BulletMovement : MonoBehaviour
 {
-    private float speed;
-    private float maxDistance;
-    private int damage;
+    private float speed = 1;
+    private float maxDistance = 1000;
+    private int damage = 0;
     
     private Vector3 _startPosition;
 
@@ -37,6 +38,10 @@ public class BulletMovement : MonoBehaviour
         {
             Debug.Log("Hit");
             damageable.TakeDamage(damage);
+            Destroy(gameObject);
+        }
+        else if (!other.isTrigger)
+        {
             Destroy(gameObject);
         }
     }
