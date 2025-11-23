@@ -4,7 +4,6 @@ using UnityEngine;
 public abstract class Weapon : MonoBehaviour
 {
     public WeaponData weaponData;
-    public PlayerMovement playerMovement;
     public Transform cameraTransform;
     private float currentAmmo = 0f;
     private float nextTimetoFire = 0f;
@@ -15,8 +14,12 @@ public abstract class Weapon : MonoBehaviour
     void Start()
     {
         currentAmmo = weaponData.magazineSize;
-        playerMovement = transform.root.GetComponent<PlayerMovement>();
         cameraTransform = transform.root.GetComponentInChildren<Camera>().transform; // A changer on va tirer un raycast vers la position de la souris et non depuis la camera
+    }
+
+    public virtual void Update()
+    {
+        
     }
 
     public void TryReload()
@@ -55,6 +58,7 @@ public abstract class Weapon : MonoBehaviour
     private void HandleShoot()
     {
         currentAmmo--;
+        //muzzleflash()
         Debug.Log("Current Ammo: " + currentAmmo);
         Shoot();
     }
