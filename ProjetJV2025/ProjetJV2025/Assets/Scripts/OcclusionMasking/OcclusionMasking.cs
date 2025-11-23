@@ -33,7 +33,7 @@ public class OcclusionMasking : MonoBehaviour
         
         Vector3 offset = targetObject.position - transform.position;
         RaycastHit[] occludingObjects = Physics.SphereCastAll(transform.position, 1.20f, transform.forward, offset.magnitude - 2f, layerMask);
-        Debug.Log("1:" + occludingObjects.Length);
+        //Debug.Log("1:" + occludingObjects.Length);
         if (hitBuffer != null && hitBuffer.Count > 0)
         {
             RaycastHit[] resetObjects = hitBuffer.Union(occludingObjects).ToArray();
@@ -71,7 +71,7 @@ public class OcclusionMasking : MonoBehaviour
             }
         }
         hitBuffer.AddRange(occludingObjects);
-        Debug.Log("2:"+hitBuffer.Count);
+        //Debug.Log("2:"+hitBuffer.Count);
         
     }
 
