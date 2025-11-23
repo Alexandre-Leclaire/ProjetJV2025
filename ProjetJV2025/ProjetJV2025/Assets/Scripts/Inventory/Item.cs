@@ -1,22 +1,24 @@
+using UnityEngine;
+
 [System.Serializable]
 public class Item
 {
     public enum ItemType
     {
-        Bois,
-        Pierre,
-        Métal,
-        Nourriture,
-        Or,
-        Potion
+        Food,
+        Cloth,
+        Metal,
+        Bandage,
+        Ammo,
+        Meal
     }
 
     public ItemType type;
     public int quantity;
 
-    public Item(ItemType itemType, int qty)
+    public Item(ItemType type, int qty)
     {
-        type = itemType;
-        quantity = qty;
+        this.type = type;
+        this.quantity = qty;
     }
 }
