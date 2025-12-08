@@ -1,3 +1,6 @@
+using System.Collections;
+using UnityEngine;
+
 public class ResourceSpawner : MonoBehaviour
 {
     public Item.ItemType currentType;
