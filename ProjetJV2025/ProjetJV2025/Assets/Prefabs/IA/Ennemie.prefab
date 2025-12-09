@@ -238,7 +238,7 @@ MonoBehaviour:
   visionAngle: 45
   shootRange: 2
   shootTime: 2
-  damage: 1
+  damage: 5
   hp: 10
   player: {fileID: 0}
   bulletPrefab: {fileID: 6578030510473295147, guid: 99d44cfd128642aacbbb58cec913cfc6, type: 3}

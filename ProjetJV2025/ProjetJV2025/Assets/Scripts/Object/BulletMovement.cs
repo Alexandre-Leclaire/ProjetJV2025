@@ -36,7 +36,7 @@ public class BulletMovement : MonoBehaviour
     {
         if (other.TryGetComponent(out IDamageable damageable))
         {
-            Debug.Log("Hit");
+            Debug.Log($"Hit {other.name}");
             damageable.TakeDamage(damage);
             Destroy(gameObject);
         }

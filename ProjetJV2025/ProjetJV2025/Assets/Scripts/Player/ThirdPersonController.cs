@@ -1,5 +1,8 @@
-﻿ using UnityEngine;
+﻿ using System;
+ using UnityEngine;
  using UnityEngine.Animations.Rigging;
+ using UnityEngine.UI;
+ using Random = UnityEngine.Random;
 #if ENABLE_INPUT_SYSTEM 
 using UnityEngine.InputSystem;
 #endif
@@ -90,6 +93,12 @@ namespace StarterAssets
         private GameObject _mainCamera;
 
         public int health;
+        public Slider healthSlider;
+
+        public int maxStamina = 200;
+        public int stamina;
+        public Slider staminaSlider;
+        private float _staminaRegenCooldown;
         
         private bool _hasAnimator;
         
@@ -170,9 +179,26 @@ namespace StarterAssets
 
             if (Input.GetKey(KeyCode.LeftShift)|| Input.GetKey(KeyCode.RightShift))
             {
-                input.y *= 2;
-                input.x *= 2;
+                if (stamina > 0)
+                {
+                    input.y *= 2;
+                    input.x *= 2;
+
+                    stamina -= 1;
+                    _staminaRegenCooldown = 1f;
+                }
             }
+            else if (_staminaRegenCooldown <= 0f)
+            {
+                stamina += 1;
+            }
+            else
+            {
+                _staminaRegenCooldown -= Time.deltaTime;
+            }
+
+            stamina = Math.Clamp(stamina, 0, maxStamina);
+            staminaSlider.value = stamina / (float)maxStamina;
             
             if (_hasAnimator)
             {
@@ -316,6 +342,8 @@ namespace StarterAssets
         public void TakeDamage(int damage)
         {
             health -= damage;
+            healthSlider.value = Mathf.Clamp(health / 100f, 0f, 1f);
+            Debug.Log($"Player have {health}hp (Slide value: {healthSlider.value})");
         }
     }
 }

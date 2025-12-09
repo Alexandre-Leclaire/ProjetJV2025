@@ -33,8 +33,6 @@ public class Enemie : MonoBehaviour, IAiEntity, IDamageable
         {
             player = GameObject.FindGameObjectWithTag("Player");
         }
-        
-        bulletPrefab.Init(10, shootRange, damage);
 
         laserObject.transform.localScale = new Vector3(0.1f, 0.1f, shootRange);
         laserObject.transform.localPosition = new Vector3(0, 0, (shootRange / 2) + 0.5f);
@@ -145,11 +143,14 @@ public class Enemie : MonoBehaviour, IAiEntity, IDamageable
         {
             if (shootTimer <= 0)
             {
-                Instantiate(entity.bulletPrefab, entity.transform.position, entity.transform.rotation);
+                BulletMovement bullet = Instantiate(entity.bulletPrefab, entity.transform.position + entity.transform.forward, entity.transform.rotation);
+                bullet.Init(10, entity.shootRange, entity.damage);
+                
                 entity.Agent.isStopped = false;
 
-                if (entity.HavePlayerInVision())
+                if (Vector3.Distance(entity.player.transform.position, entity.transform.position) <= entity.shootRange)
                 {
+                    entity.transform.LookAt(entity.player.transform);
                     shootTimer = entity.shootTime;
                 }
                 else
