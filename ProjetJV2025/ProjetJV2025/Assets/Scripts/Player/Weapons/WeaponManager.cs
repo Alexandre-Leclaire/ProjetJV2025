@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections;
+using TMPro;
 using UnityEngine.Animations.Rigging;
+using UnityEngine.UI;
 
 public class WeaponManager : MonoBehaviour
 {
@@ -11,7 +13,12 @@ public class WeaponManager : MonoBehaviour
     [SerializeField]
     private AvatarMask _upperBodyMask;
 
-    
+    [SerializeField] 
+    private TMP_Text _weaponNameText;
+    [SerializeField] 
+    private TMP_Text _ammoText;
+    [SerializeField] 
+    private Slider _ammoSlider;
     
     [SerializeField]
     private Rig _rifleAim; 
@@ -66,6 +73,14 @@ public class WeaponManager : MonoBehaviour
         if (_selectedWeapon != tmp)
         {
             SelectWeapon(); 
+        }
+
+        _ammoSlider.value = ((float)weapons[_selectedWeapon].currentAmmo) /
+                            ((float)weapons[_selectedWeapon].weaponData.magazineSize);
+        _ammoText.text = $"{weapons[_selectedWeapon].currentAmmo}/{weapons[_selectedWeapon].weaponData.magazineSize}";
+        if (weapons[_selectedWeapon].currentAmmo == 0)
+        {
+            _ammoText.text += "(R)";
         }
     }
 
@@ -146,6 +161,8 @@ public class WeaponManager : MonoBehaviour
 
     private void SelectWeapon()
     {
+        _weaponNameText.text = weapons[_selectedWeapon].weaponData.weaponName;
+        
         if (weapons[_selectedWeapon] is Rifle)
         {
             ActivateLayer(rifleRigs, _rifleAim, _rifleBodyAim);

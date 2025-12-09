@@ -5,7 +5,7 @@ public abstract class Weapon : MonoBehaviour
 {
     public WeaponData weaponData;
     
-    private float currentAmmo = 0f;
+    public int currentAmmo = 0;
     private float nextTimetoFire = 0f;
     private bool isReloading = false;
     
