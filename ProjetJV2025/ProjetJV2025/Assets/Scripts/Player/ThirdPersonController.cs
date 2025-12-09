@@ -10,7 +10,7 @@ using UnityEngine.InputSystem;
 namespace StarterAssets
 {
 
-    public class ThirdPersonController : MonoBehaviour
+    public class ThirdPersonController : MonoBehaviour, IDamageable
     {
         [Header("Player")]
         [Tooltip("Move speed of the character in m/s")]
@@ -88,10 +88,11 @@ namespace StarterAssets
         private Animator _animator;
         private StarterAssetsInputs _input;
         private GameObject _mainCamera;
-        
+
+        public int health;
         
         private bool _hasAnimator;
-
+        
         private Vector2 input;
         
         private void Awake()
@@ -101,6 +102,7 @@ namespace StarterAssets
             {
                 _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
             }
+            health = 100;
         }
 
         private void Start()
@@ -121,10 +123,15 @@ namespace StarterAssets
         private void Update()
         {
             _hasAnimator = TryGetComponent(out _animator);
-
+        
             //JumpAndGravity();
             GroundedCheck();
             Move();
+
+            if (health <= 0)
+            {
+                Destroy(this.gameObject);
+            }
         }
 
         private void LateUpdate()
@@ -304,6 +311,11 @@ namespace StarterAssets
             {
                 //AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
             }
+        }
+
+        public void TakeDamage(int damage)
+        {
+            health -= damage;
         }
     }
 }

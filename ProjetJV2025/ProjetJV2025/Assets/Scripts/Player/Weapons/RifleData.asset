@@ -16,7 +16,7 @@ MonoBehaviour:
   targetLayerMask:
     serializedVersion: 2
     m_Bits: 4294967295
-  weaponDamage: 8
+  weaponDamage: 3
   weaponRange: 25
   rateOfFire: 10
   magazineSize: 30
