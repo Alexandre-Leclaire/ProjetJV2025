@@ -11,7 +11,7 @@ public class WeaponData : ScriptableObject
     public float weaponRange;
     public float rateOfFire;
     [Header("ReloadConfig")]
-    public float magazineSize;
+    public int magazineSize;
     public float reloadTime;
     
 }

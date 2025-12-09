@@ -1159,6 +1159,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8c1a5cd9479415d4792957ce5a134076, type: 3}
+--- !u!114 &356873798 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1652616462632992691, guid: 34e3b531576607e4fa82ce6fbba6d719, type: 3}
+  m_PrefabInstance: {fileID: 981265417}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &395302079
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1730,6 +1741,17 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 587561058}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &642940238 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6562920781416412141, guid: 34e3b531576607e4fa82ce6fbba6d719, type: 3}
+  m_PrefabInstance: {fileID: 981265417}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &671846519 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 8daae96f3c731e549a44b4a1bfef538e, type: 3}
@@ -4008,6 +4030,18 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: -3.3379316
       objectReference: {fileID: 0}
+    - target: {fileID: 7292684493643971757, guid: 02f66d49e02fa9d01914acf7a82792fc, type: 3}
+      propertyPath: _ammoText
+      value: 
+      objectReference: {fileID: 642940238}
+    - target: {fileID: 7292684493643971757, guid: 02f66d49e02fa9d01914acf7a82792fc, type: 3}
+      propertyPath: _ammoSlider
+      value: 
+      objectReference: {fileID: 356873798}
+    - target: {fileID: 7292684493643971757, guid: 02f66d49e02fa9d01914acf7a82792fc, type: 3}
+      propertyPath: _weaponNameText
+      value: 
+      objectReference: {fileID: 2028295214}
     - target: {fileID: 7841544836442883317, guid: 02f66d49e02fa9d01914acf7a82792fc, type: 3}
       propertyPath: m_Name
       value: PlayerSetup
@@ -4915,6 +4949,17 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2028295214 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2382561017327283422, guid: 34e3b531576607e4fa82ce6fbba6d719, type: 3}
+  m_PrefabInstance: {fileID: 981265417}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2054456065
 GameObject:
   m_ObjectHideFlags: 0
