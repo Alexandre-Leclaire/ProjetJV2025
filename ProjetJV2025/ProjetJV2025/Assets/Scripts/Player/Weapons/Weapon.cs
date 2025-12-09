@@ -4,17 +4,22 @@ using UnityEngine;
 public abstract class Weapon : MonoBehaviour
 {
     public WeaponData weaponData;
-    public Transform cameraTransform;
+    
     private float currentAmmo = 0f;
     private float nextTimetoFire = 0f;
     private bool isReloading = false;
     
+    public ParticleSystem muzzleFlash;
+    public ParticleSystem hitEffect;
+    public TrailRenderer tracerEffect;
+
+    public Transform gunLookAt;
+    public GameObject laser;
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         currentAmmo = weaponData.magazineSize;
-        cameraTransform = transform.root.GetComponentInChildren<Camera>().transform; // A changer on va tirer un raycast vers la position de la souris et non depuis la camera
     }
 
     public virtual void Update()
@@ -48,7 +53,7 @@ public abstract class Weapon : MonoBehaviour
         {
             return;
         }
-        else if (Time.time >= nextTimetoFire)
+        else if (Time.time >= nextTimetoFire && Input.GetMouseButton(1))
         {
             nextTimetoFire = Time.time + (1 / weaponData.rateOfFire);
             HandleShoot();
@@ -58,7 +63,7 @@ public abstract class Weapon : MonoBehaviour
     private void HandleShoot()
     {
         currentAmmo--;
-        //muzzleflash()
+        muzzleFlash.Emit(1);
         Debug.Log("Current Ammo: " + currentAmmo);
         Shoot();
     }

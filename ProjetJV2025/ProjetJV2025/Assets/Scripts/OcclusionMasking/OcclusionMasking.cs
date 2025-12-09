@@ -46,6 +46,7 @@ public class OcclusionMasking : MonoBehaviour
                     mats[j].SetFloat("_FalloffSize", 0f);
                     mats[j].SetOverrideTag("RenderType", "Opaque");
                     mats[j].SetFloat("_Alpha", 1f);
+                    mats[j].SetFloat("_Mode", 1f);
                 }
             }
             //On reset le buffer apres avoir reset les shaders d'objets
@@ -68,6 +69,7 @@ public class OcclusionMasking : MonoBehaviour
                 materials[j].SetFloat("_FalloffSize", 0.05f);
                 materials[j].SetFloat("_Alpha", 0.4f);
                 materials[j].SetOverrideTag("RenderType", "Transparent");
+                materials[j].SetFloat("_Mode", 2f);
             }
         }
         hitBuffer.AddRange(occludingObjects);
