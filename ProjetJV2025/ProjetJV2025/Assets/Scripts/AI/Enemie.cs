@@ -10,7 +10,7 @@ public class Enemie : MonoBehaviour, IAiEntity, IDamageable
     [SerializeField] private float shootRange;
     [SerializeField] private float shootTime;
     [SerializeField] private int damage;
-    [SerializeField] private int hp;
+    [SerializeField] public int hp;
     [SerializeField] private GameObject player;
     [SerializeField] private BulletMovement bulletPrefab;
     [SerializeField] private GameObject laserObject;

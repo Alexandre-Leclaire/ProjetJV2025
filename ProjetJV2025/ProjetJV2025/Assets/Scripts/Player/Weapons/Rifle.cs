@@ -37,6 +37,10 @@ public class Rifle : Weapon
          hitEffect.Emit(1);
          
          tracer.transform.position = hit.point;
+         if (hit.collider.gameObject.TryGetComponent(out IDamageable damageable))
+         {
+             damageable.TakeDamage((int) weaponData.weaponDamage);
+         }
      }
      else
      {

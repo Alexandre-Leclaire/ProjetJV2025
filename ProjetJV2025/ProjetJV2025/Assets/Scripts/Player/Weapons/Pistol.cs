@@ -35,8 +35,12 @@ public class Pistol : Weapon
          hitEffect.transform.position = hit.point;
          hitEffect.transform.forward = hit.normal;
          hitEffect.Emit(1);
-         
+       
          tracer.transform.position = hit.point;
+         if (hit.collider.gameObject.TryGetComponent(out IDamageable damageable))
+         {
+             damageable.TakeDamage((int) weaponData.weaponDamage);
+         }
      }
      else
      {
