@@ -16,29 +16,30 @@ public class PeriodController : MonoBehaviour
     {
         while (true)
         {
-            ApplyDistribution(Item.ItemType.Food);
+            ApplyDistribution(ResourceType.Food);
             yield return new WaitForSeconds(periodDuration);
 
-            ApplyDistribution(Item.ItemType.Cloth);
+            ApplyDistribution(ResourceType.Cloth);
             yield return new WaitForSeconds(periodDuration);
 
-            ApplyDistribution(Item.ItemType.Metal);
+            ApplyDistribution(ResourceType.Metal);
             yield return new WaitForSeconds(periodDuration);
         }
     }
 
-    void ApplyDistribution(Item.ItemType dominant)
+    void ApplyDistribution(ResourceType dominant)
     {
         foreach (var s in spawners)
         {
             float r = Random.value;
 
-            if (r < 0.6f)
-                s.Spawn(dominant);
-            else if (r < 0.8f)
-                s.Spawn(Item.ItemType.Cloth);
-            else
-                s.Spawn(Item.ItemType.Metal);
+            string id =
+                r < 0.6f ? dominant.ToString() :
+                r < 0.8f ? "Cloth" :
+                           "Metal";
+
+            s.Spawn(id);
         }
     }
+
 }

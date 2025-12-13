@@ -2,23 +2,16 @@ using UnityEngine;
 
 public class ResourceCubeColor : MonoBehaviour
 {
-    public void SetColor(Item.ItemType type)
+    public void SetColor(string resourceId)
     {
         var rend = GetComponent<Renderer>();
 
-        switch (type)
+        rend.material.color = resourceId switch
         {
-            case Item.ItemType.Food:
-                rend.material.color = Color.green;
-                break;
-
-            case Item.ItemType.Cloth:
-                rend.material.color = Color.cyan;
-                break;
-
-            case Item.ItemType.Metal:
-                rend.material.color = Color.gray;
-                break;
-        }
+            "Food" => Color.green,
+            "Cloth" => Color.cyan,
+            "Metal" => Color.gray,
+            _ => Color.white
+        };
     }
 }

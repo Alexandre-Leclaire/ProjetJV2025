@@ -4,7 +4,6 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 
-[RequireComponent(typeof(IActionnable))]
 [RequireComponent(typeof(PlayerInput))]
 public class ActionBox : MonoBehaviour
 {
@@ -12,23 +11,54 @@ public class ActionBox : MonoBehaviour
     [SerializeField] private TMP_Text actionNameText;
     [SerializeField] private TMP_Text bottomText;
 
-    private int curIndex;
-    private bool doingAction;
-    private float resetCooldown;
-    private GameObject player;
-    private PlayerInput input;
+    int curIndex;
+    bool doingAction;
+    float resetCooldown;
+    GameObject player;
+    PlayerInput input;
 
-    private List<IActionnable.Element> actions;
+    IActionnable actionnable;
+    List<IActionnable.Element> actions;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        actions = GetComponent<IActionnable>().GetActions();
+        if (canvas == null || actionNameText == null || bottomText == null)
+        {
+            Debug.LogError($"ActionBox ({name}) : références UI manquantes");
+            enabled = false;
+            return;
+        }
+
+        actionnable = GetComponent<IActionnable>();
+        if (actionnable == null)
+        {
+            Debug.LogError($"ActionBox ({name}) : aucun composant IActionnable trouvé");
+            enabled = false;
+            return;
+        }
+
+        actions = actionnable.GetActions();
+        if (actions == null || actions.Count == 0)
+        {
+            Debug.LogError($"ActionBox ({name}) : aucune action définie");
+            enabled = false;
+            return;
+        }
+
         input = GetComponent<PlayerInput>();
         input.enabled = false;
 
         canvas.SetActive(false);
+        curIndex = 0;
         UpdateText();
+
+        PlaceCanvas();
+    }
+
+    void PlaceCanvas()
+    {
+        canvas.transform.localPosition = new Vector3(0f, 1.2f, 0f);
+        canvas.transform.localRotation = Quaternion.identity;
     }
 
     void Update()
@@ -38,45 +68,57 @@ public class ActionBox : MonoBehaviour
             bottomText.text = $"Usable in {(int)resetCooldown}s...";
             resetCooldown -= Time.deltaTime;
         }
+
+        // INPUT SIMPLE POUR TEST / GAMEPLAY
+        if (player != null && Input.GetKeyDown(KeyCode.E))
+        {
+            OnSubmit();
+        }
     }
 
     void OnSubmit()
     {
-        Debug.Log($"Submit {player} && {doingAction} && {resetCooldown}");
-        if (player != null && !doingAction && resetCooldown <= 0f)
-        {
-            doingAction = true;
-            StartCoroutine(DoAction(player));
-        }
+        if (player == null || doingAction || resetCooldown > 0f)
+            return;
+
+        doingAction = true;
+        StartCoroutine(DoAction(player));
     }
 
-    void OnNavigate(InputValue value)
+    void OnTriggerEnter(Collider other)
     {
-        if (player != null)
-        {
-            int m = (int)value.Get<float>();
+        if (!other.CompareTag("Player"))
+            return;
 
-            curIndex = (curIndex + m) % actions.Count;
-            if (curIndex < 0)
-            {
-                curIndex = actions.Count - 1;
-            }
-            UpdateText();
-        }
+        player = other.gameObject;
+        input.enabled = true;
+        canvas.SetActive(true);
+
+        // Canvas toujours face caméra
+        canvas.transform.LookAt(
+            canvas.transform.position + Camera.main.transform.rotation * Vector3.forward,
+            Camera.main.transform.rotation * Vector3.up
+        );
     }
 
-    private void OnTriggerEnter(Collider other)
+    void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Player"))
+        if (!other.CompareTag("Player"))
+            return;
+
+        canvas.SetActive(false);
+        input.enabled = false;
+        player = null;
+
+        if (doingAction && actions[curIndex].cancelOnLeave)
         {
-            player = other.gameObject;
-            input.enabled = true;
-            canvas.SetActive(true);
-            canvas.transform.LookAt(Camera.main.transform);
+            doingAction = false;
+            resetCooldown = actions[curIndex].resetCooldown;
+            StopAllCoroutines();
         }
     }
 
-    private IEnumerator DoAction(GameObject player)
+    IEnumerator DoAction(GameObject player)
     {
         IActionnable.Element action = actions[curIndex];
 
@@ -87,7 +129,7 @@ public class ActionBox : MonoBehaviour
             {
                 bottomText.text = $"Finish in {(int)time}s...";
                 time -= Time.deltaTime;
-                yield return new WaitForEndOfFrame();
+                yield return null;
             }
 
             action.onInteractionFinish(player);
@@ -97,25 +139,8 @@ public class ActionBox : MonoBehaviour
         doingAction = false;
     }
 
-    private void UpdateText()
+    void UpdateText()
     {
         actionNameText.text = actions[curIndex].name;
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            canvas.SetActive(false);
-            input.enabled = false;
-            player = null;
-
-            if (doingAction && actions[curIndex].cancelOnLeave)
-            {
-                doingAction = false;
-                resetCooldown = actions[curIndex].resetCooldown;
-                StopAllCoroutines();
-            }
-        }
     }
 }

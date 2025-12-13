@@ -2,23 +2,28 @@ using UnityEngine;
 
 public class ResourcePickup : MonoBehaviour
 {
-    public ResourceSpawner spawner;
-    public Item.ItemType type;
+    public string resourceId;
     public int amount = 10;
+
+    ResourceSpawner spawner;
+
+    public void Init(ResourceSpawner spawner, string resourceId)
+    {
+        this.spawner = spawner;
+        this.resourceId = resourceId;
+    }
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
-        {
-            Inventory inv = other.GetComponent<Inventory>();
+        if (!other.CompareTag("Player"))
+            return;
 
-            if (inv != null)
-            {
-                inv.AddItem(type, amount);
-            }
+        Inventory inv = other.GetComponent<Inventory>();
+        if (inv == null)
+            return;
 
-            Destroy(gameObject);
-            spawner.StartCoroutine(spawner.Respawn());
-        }
+        inv.Add(resourceId, amount);
+        spawner.OnCollected();
+        Destroy(gameObject);
     }
 }

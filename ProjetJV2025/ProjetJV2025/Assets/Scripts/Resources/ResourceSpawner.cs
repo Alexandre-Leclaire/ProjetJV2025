@@ -1,35 +1,38 @@
-using System.Collections;
 using UnityEngine;
 
 public class ResourceSpawner : MonoBehaviour
 {
-    public Item.ItemType currentType;
-    public GameObject basePrefab;
+    public GameObject prefab;
+    public float respawnTime = 45f;
 
-    GameObject spawned;
-    float respawnTime = 45f;
+    GameObject current;
+    string currentResourceId;
 
-    public void Spawn(Item.ItemType type)
+    public void Spawn(string resourceId)
     {
-        currentType = type;
+        currentResourceId = resourceId;
 
-        if (spawned != null)
-            Destroy(spawned);
+        if (current != null)
+            Destroy(current);
 
-        spawned = Instantiate(basePrefab, transform.position, Quaternion.identity);
+        current = Instantiate(prefab, transform.position, Quaternion.identity);
 
-        var pickup = spawned.GetComponent<ResourcePickup>();
-        pickup.spawner = this;
-        pickup.type = type;
+        var pickup = current.GetComponent<ResourcePickup>();
+        pickup.Init(this, resourceId);
 
-        var color = spawned.GetComponent<ResourceCubeColor>();
+        var color = current.GetComponent<ResourceCubeColor>();
         if (color != null)
-            color.SetColor(type);
+            color.SetColor(resourceId);
     }
 
-    public IEnumerator Respawn()
+    public void OnCollected()
     {
-        yield return new WaitForSeconds(respawnTime);
-        Spawn(currentType);
+        current = null;
+        Invoke(nameof(Respawn), respawnTime);
+    }
+
+    void Respawn()
+    {
+        Spawn(currentResourceId);
     }
 }

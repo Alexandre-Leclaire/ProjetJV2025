@@ -3,47 +3,35 @@ using UnityEngine;
 
 public class Inventory : MonoBehaviour
 {
-    public List<Item> items = new List<Item>();
+    public List<Item> items = new();
 
-    public void AddItem(Item.ItemType type, int qty)
+    public void Add(string id, int qty)
     {
-        Item existingItem = items.Find(i => i.type == type);
-
-        if (existingItem != null)
-        {
-            existingItem.quantity += qty;
-        }
-        else
-        {
-            items.Add(new Item(type, qty));
-        }
-
-        PrintInventory();
-    }
-
-    public void RemoveItem(Item.ItemType type, int qty)
-    {
-        Item item = items.Find(i => i.type == type);
+        Item item = items.Find(i => i.id == id);
 
         if (item != null)
-        {
-            item.quantity -= qty;
-
-            if (item.quantity <= 0)
-            {
-                items.Remove(item);
-            }
-        }
-
-        PrintInventory();
+            item.quantity += qty;
+        else
+            items.Add(new Item(id, qty));
     }
 
-    public void PrintInventory()
+    public bool Has(string id, int qty)
     {
-        Debug.Log("📦 Inventaire :");
-        foreach (var item in items)
-        {
-            Debug.Log($"{item.type} x{item.quantity}");
-        }
+        Item item = items.Find(i => i.id == id);
+        return item != null && item.quantity >= qty;
+    }
+
+    public bool Remove(string id, int qty)
+    {
+        Item item = items.Find(i => i.id == id);
+        if (item == null || item.quantity < qty)
+            return false;
+
+        item.quantity -= qty;
+
+        if (item.quantity <= 0)
+            items.Remove(item);
+
+        return true;
     }
 }

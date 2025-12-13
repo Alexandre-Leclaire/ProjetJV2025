@@ -1,6 +1,6 @@
 using System;
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
 
 public interface IActionnable
 {
@@ -15,5 +15,5 @@ public interface IActionnable
         public float resetCooldown;
     }
 
-    public List<Element> GetActions();
+    List<Element> GetActions();
 }
