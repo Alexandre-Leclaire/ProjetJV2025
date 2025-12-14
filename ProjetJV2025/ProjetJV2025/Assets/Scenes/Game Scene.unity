@@ -2738,34 +2738,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 501183442539741433, guid: abe69fc2eefd168499509279a6791c45, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2095672278036557648, guid: abe69fc2eefd168499509279a6791c45, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.01
-      objectReference: {fileID: 0}
-    - target: {fileID: 2095672278036557648, guid: abe69fc2eefd168499509279a6791c45, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.01
-      objectReference: {fileID: 0}
-    - target: {fileID: 2201837493606501823, guid: abe69fc2eefd168499509279a6791c45, type: 3}
-      propertyPath: hp
-      value: 30
-      objectReference: {fileID: 0}
-    - target: {fileID: 2201837493606501823, guid: abe69fc2eefd168499509279a6791c45, type: 3}
-      propertyPath: damage
-      value: 15
-      objectReference: {fileID: 0}
-    - target: {fileID: 2201837493606501823, guid: abe69fc2eefd168499509279a6791c45, type: 3}
-      propertyPath: shootTime
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2201837493606501823, guid: abe69fc2eefd168499509279a6791c45, type: 3}
-      propertyPath: shootRange
-      value: 7
-      objectReference: {fileID: 0}
     - target: {fileID: 5015175214885620750, guid: abe69fc2eefd168499509279a6791c45, type: 3}
       propertyPath: m_LocalPosition.x
       value: 9.5946
