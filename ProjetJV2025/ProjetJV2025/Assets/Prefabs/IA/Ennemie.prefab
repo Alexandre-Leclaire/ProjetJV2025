@@ -28,7 +28,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 1}
-  m_LocalScale: {x: 0.1, y: 0.1, z: 1}
+  m_LocalScale: {x: 0.01, y: 0.01, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5015175214885620750}
@@ -183,10 +183,10 @@ MonoBehaviour:
   patrolRadius: 10
   vision: 10
   visionAngle: 60
-  shootRange: 4
-  shootTime: 2
-  damage: 5
-  hp: 10
+  shootRange: 7
+  shootTime: 1
+  damage: 15
+  hp: 30
   player: {fileID: 0}
   laserObject: {fileID: 501183442539741433}
   muzzleFlash: {fileID: 8529252920943880369}
