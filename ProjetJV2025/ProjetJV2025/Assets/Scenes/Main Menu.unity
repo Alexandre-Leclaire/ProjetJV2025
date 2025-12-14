@@ -1164,10 +1164,17 @@ MonoBehaviour:
 
     Shoot: Mouse 1
 
+    Reload: R
+
+    Use
+    Bandage (heal some hps) : H
+
+    Use Meal (infinite stamina for 5 seconds) :
+    M
+
     Interact: E
 
-    Switch
-    Weapon: Scrool'
+    Switch Weapon: Scrool'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
