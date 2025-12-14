@@ -1614,7 +1614,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  m_Actions: {fileID: -944628639613478452, guid: e6f00157dbe88c24798b567cfc2552f8, type: 3}
   m_NotificationBehavior: 0
   m_UIInputModule: {fileID: 0}
   m_DeviceLostEvent:
@@ -1629,7 +1629,7 @@ MonoBehaviour:
   m_ActionEvents: []
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
-  m_DefaultActionMap: 
+  m_DefaultActionMap: Actions
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
 --- !u!65 &551217950
@@ -2355,7 +2355,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  m_Actions: {fileID: -944628639613478452, guid: e6f00157dbe88c24798b567cfc2552f8, type: 3}
   m_NotificationBehavior: 0
   m_UIInputModule: {fileID: 0}
   m_DeviceLostEvent:
@@ -2370,7 +2370,7 @@ MonoBehaviour:
   m_ActionEvents: []
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
-  m_DefaultActionMap: 
+  m_DefaultActionMap: Actions
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
 --- !u!65 &839871544
@@ -4569,7 +4569,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  m_Actions: {fileID: -944628639613478452, guid: e6f00157dbe88c24798b567cfc2552f8, type: 3}
   m_NotificationBehavior: 0
   m_UIInputModule: {fileID: 0}
   m_DeviceLostEvent:
@@ -4584,7 +4584,7 @@ MonoBehaviour:
   m_ActionEvents: []
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
-  m_DefaultActionMap: 
+  m_DefaultActionMap: Actions
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
 --- !u!114 &1540944512
@@ -5185,6 +5185,29 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!1 &1772682544 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3954215258849141919, guid: 5db267e9200c50a6d99203971965beae, type: 3}
+  m_PrefabInstance: {fileID: 2060244317}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1772682548
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1772682544}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0766f90630b94f8abfce0faee309b6d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buildPrefabs:
+  - {fileID: 6223571417515535730, guid: ff2c1749a69581574a9c03634c360a34, type: 3}
+  - {fileID: 5870700020617840616, guid: bc5515643382a27469a6afe030fdee4f, type: 3}
+  - {fileID: 8355784874983207149, guid: e60251a71862db54b841749a544088c9, type: 3}
+  spawnTimer: 20
+  cooldownTimer: 90
 --- !u!1001 &1773474256
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5479,7 +5502,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3954215258849141919, guid: 5db267e9200c50a6d99203971965beae, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2070282830}
   m_SourcePrefab: {fileID: 100100000, guid: 5db267e9200c50a6d99203971965beae, type: 3}
 --- !u!4 &1805873595 stripped
 Transform:
@@ -6435,8 +6461,34 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3954215258849141919, guid: 5db267e9200c50a6d99203971965beae, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1772682548}
   m_SourcePrefab: {fileID: 100100000, guid: 5db267e9200c50a6d99203971965beae, type: 3}
+--- !u!1 &2070282826 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3954215258849141919, guid: 5db267e9200c50a6d99203971965beae, type: 3}
+  m_PrefabInstance: {fileID: 1805873594}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2070282830
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2070282826}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0766f90630b94f8abfce0faee309b6d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buildPrefabs:
+  - {fileID: 6223571417515535730, guid: ff2c1749a69581574a9c03634c360a34, type: 3}
+  - {fileID: 5870700020617840616, guid: bc5515643382a27469a6afe030fdee4f, type: 3}
+  - {fileID: 8355784874983207149, guid: e60251a71862db54b841749a544088c9, type: 3}
+  spawnTimer: 20
+  cooldownTimer: 90
 --- !u!1 &2134077783
 GameObject:
   m_ObjectHideFlags: 0
