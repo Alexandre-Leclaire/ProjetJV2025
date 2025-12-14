@@ -37,11 +37,28 @@ public class InventoryUI : MonoBehaviour
 
         sb.AppendLine();
         sb.AppendLine("Crafted");
+
         foreach (CraftedItemType c in System.Enum.GetValues(typeof(CraftedItemType)))
         {
-            sb.AppendLine($"{c}: {inventory.GetQuantity(c.ToString())}");
+            string keyHint = GetKeyHint(c);
+            sb.AppendLine($"{c}: {inventory.GetQuantity(c.ToString())}{keyHint}");
         }
 
         inventoryText.text = sb.ToString();
+    }
+
+    string GetKeyHint(CraftedItemType type)
+    {
+        switch (type)
+        {
+            case CraftedItemType.Bandage:
+                return " (H)";
+
+            case CraftedItemType.Meal:
+                return " (M)";
+
+            default:
+                return "";
+        }
     }
 }
