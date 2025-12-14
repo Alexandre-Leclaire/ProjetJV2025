@@ -95,8 +95,8 @@ namespace StarterAssets
         public int health;
         public Slider healthSlider;
 
-        public int maxStamina = 200;
-        public int stamina;
+        public float maxStamina = 5f;
+        public float stamina;
         public Slider staminaSlider;
         private float _staminaRegenCooldown;
         
@@ -184,13 +184,13 @@ namespace StarterAssets
                     input.y *= 2;
                     input.x *= 2;
 
-                    stamina -= 1;
+                    stamina -= 1 * Time.deltaTime;
                     _staminaRegenCooldown = 1f;
                 }
             }
             else if (_staminaRegenCooldown <= 0f)
             {
-                stamina += 1;
+                stamina += 1 * Time.deltaTime;
             }
             else
             {

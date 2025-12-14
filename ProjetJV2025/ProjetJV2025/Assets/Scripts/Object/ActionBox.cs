@@ -23,13 +23,12 @@ public class ActionBox : MonoBehaviour
     List<IActionnable.Element> actions;
 
     string idleMessage = "Press E to interact";
-    Coroutine messageRoutine;
 
     void Start()
     {
         if (canvas == null || actionNameText == null || bottomText == null)
         {
-            Debug.LogError($"ActionBox ({name}) : références UI manquantes");
+            Debug.LogError($"[ActionBox] UI references missing on {name}");
             enabled = false;
             return;
         }
@@ -37,7 +36,7 @@ public class ActionBox : MonoBehaviour
         actionnable = GetComponent<IActionnable>();
         if (actionnable == null)
         {
-            Debug.LogError($"ActionBox ({name}) : aucun composant IActionnable trouvé");
+            Debug.LogError($"[ActionBox] No IActionnable found on {name}");
             enabled = false;
             return;
         }
@@ -45,7 +44,7 @@ public class ActionBox : MonoBehaviour
         actions = actionnable.GetActions();
         if (actions == null || actions.Count == 0)
         {
-            Debug.LogError($"ActionBox ({name}) : aucune action définie");
+            Debug.LogError($"[ActionBox] No actions defined on {name}");
             enabled = false;
             return;
         }
@@ -113,7 +112,6 @@ public class ActionBox : MonoBehaviour
 
         StopAllCoroutines();
         doingAction = false;
-        messageRoutine = null;
     }
 
     void LookAtCamera()
@@ -133,7 +131,7 @@ public class ActionBox : MonoBehaviour
         if (!action.onInteract(player))
         {
             Debug.LogWarning(
-                $"[ActionBox] Craft failed on '{name}' : not enough resources for '{action.name}'"
+                $"[ActionBox] Action '{action.name}' failed on '{name}' (missing resources)"
             );
 
             doingAction = false;
@@ -151,26 +149,12 @@ public class ActionBox : MonoBehaviour
 
         // ✅ SUCCESS
         action.onInteractionFinish(player);
-        ShowTemporaryMessage("✅ Craft successful", 2f);
+        Debug.Log($"[ActionBox] Action '{action.name}' completed on '{name}'");
 
         resetCooldown = action.resetCooldown;
-        doingAction = false;
-    }
-
-    void ShowTemporaryMessage(string msg, float duration)
-    {
-        if (messageRoutine != null)
-            StopCoroutine(messageRoutine);
-
-        messageRoutine = StartCoroutine(TemporaryMessageRoutine(msg, duration));
-    }
-
-    IEnumerator TemporaryMessageRoutine(string msg, float duration)
-    {
-        bottomText.text = msg;
-        yield return new WaitForSeconds(duration);
         bottomText.text = idleMessage;
-        messageRoutine = null;
+
+        doingAction = false;
     }
 
     void UpdateText()
