@@ -3,7 +3,11 @@
  using UnityEngine.Animations.Rigging;
  using UnityEngine.UI;
  using Random = UnityEngine.Random;
-#if ENABLE_INPUT_SYSTEM 
+using System.Collections.Generic;
+using System.Collections;
+
+
+#if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
 #endif
 
@@ -25,6 +29,11 @@ namespace StarterAssets
         [Tooltip("How fast the character turns to face movement direction")]
         [Range(0.0f, 0.3f)]
         public float RotationSmoothTime = 0.12f;
+
+        [Header("Stamina Boost")]
+        public float eatStaminaProtectionDuration = 5f;
+        public bool staminaProtected = false;
+
 
         [Tooltip("Acceleration and deceleration")]
         public float SpeedChangeRate = 10.0f;
@@ -114,6 +123,19 @@ namespace StarterAssets
             health = 100;
         }
 
+        public void EnableStaminaProtection()
+        {
+            StartCoroutine(StaminaProtectionRoutine());
+        }
+
+        private IEnumerator StaminaProtectionRoutine()
+        {
+            staminaProtected = true;
+            yield return new WaitForSeconds(eatStaminaProtectionDuration);
+            staminaProtected = false;
+        }
+
+
         private void Start()
         {
             _hasAnimator = TryGetComponent(out _animator);
@@ -184,7 +206,11 @@ namespace StarterAssets
                     input.y *= 2;
                     input.x *= 2;
 
-                    stamina -= 1 * Time.deltaTime;
+                    if (!staminaProtected)
+                    {
+                        stamina -= 1 * Time.deltaTime;
+                    }
+
                     _staminaRegenCooldown = 1f;
                 }
             }
