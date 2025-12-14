@@ -7,11 +7,20 @@ public class ResourcePickup : MonoBehaviour
     public int amount = 10;
 
     ResourceSpawner spawner;
+    ResourceCubeColor cubeColor;
+
+    private void Awake()
+    {
+        cubeColor = GetComponent<ResourceCubeColor>();
+        cubeColor.SetColor(resourceId);
+    }
 
     public void Init(ResourceSpawner spawner, string resourceId)
     {
         this.spawner = spawner;
         this.resourceId = resourceId;
+
+        cubeColor.SetColor(resourceId);
     }
 
     void OnTriggerEnter(Collider other)
