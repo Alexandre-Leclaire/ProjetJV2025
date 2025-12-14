@@ -37,7 +37,7 @@ public class WeaponManager : MonoBehaviour
     private Rig _rigBodyAim;
     private Rig[] rifleRigs;
     private Rig[] pistolRigs;
-    
+
     private int _selectedWeapon;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -70,6 +70,7 @@ public class WeaponManager : MonoBehaviour
     {
         int tmp = _selectedWeapon;
         SwitchWeapons();
+        Debug.Log(_selectedWeapon);
         if (_selectedWeapon != tmp)
         {
             SelectWeapon(); 
@@ -98,30 +99,30 @@ public class WeaponManager : MonoBehaviour
    
     private void SwitchWeapons()
     {
-        if (weapons.Length == 1)
-        {
-            return;
-        }
-        if (Input.GetAxis("Mouse ScrollWheel") > 0)
-        {
-            weapons[_selectedWeapon].gameObject.SetActive(false);
-            _selectedWeapon += 1;
-            if (_selectedWeapon > weapons.Length - 1)
-            { 
-                _selectedWeapon = 0;
-            }
-            weapons[_selectedWeapon].gameObject.SetActive(true);
-        }
-        else if (Input.GetAxis("Mouse ScrollWheel") < 0)
-        {
-            weapons[_selectedWeapon].gameObject.SetActive(false);
-            _selectedWeapon -= 1;
-            if (_selectedWeapon < 0)
+            if (weapons.Length == 1)
             {
-                _selectedWeapon = weapons.Length - 1;
-            } 
-            weapons[_selectedWeapon].gameObject.SetActive(true);
-        }
+                return;
+            }
+            if (Input.GetAxis("Mouse ScrollWheel") > 0)
+            {
+                weapons[_selectedWeapon].gameObject.SetActive(false);
+                _selectedWeapon += 1;
+                if (_selectedWeapon > weapons.Length - 1)
+                { 
+                    _selectedWeapon = 0;
+                }
+                weapons[_selectedWeapon].gameObject.SetActive(true);
+            }
+            else if (Input.GetAxis("Mouse ScrollWheel") < 0)
+            {
+                weapons[_selectedWeapon].gameObject.SetActive(false);
+                _selectedWeapon -= 1;
+                if (_selectedWeapon < 0)
+                {
+                    _selectedWeapon = weapons.Length - 1;
+                } 
+                weapons[_selectedWeapon].gameObject.SetActive(true);
+            }
     }
 
     #region utilities
