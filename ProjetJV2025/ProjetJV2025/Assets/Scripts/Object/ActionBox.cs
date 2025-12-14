@@ -22,7 +22,7 @@ public class ActionBox : MonoBehaviour
     IActionnable actionnable;
     List<IActionnable.Element> actions;
 
-    string idleMessage = "Press E to interact";
+    string idleMessage = "Press C to interact";
 
     void Start()
     {
@@ -55,7 +55,7 @@ public class ActionBox : MonoBehaviour
         canvas.SetActive(false);
         curIndex = 0;
         UpdateText();
-        PlaceCanvas();
+        // PlaceCanvas();
     }
 
     void PlaceCanvas()
@@ -72,19 +72,31 @@ public class ActionBox : MonoBehaviour
             bottomText.text = $"Usable in {(int)resetCooldown}s...";
             return;
         }
-
-        if (player != null && Input.GetKeyDown(KeyCode.E))
+        else
         {
-            TrySubmit();
+            bottomText.text = idleMessage;
         }
     }
 
-    void TrySubmit()
+    void OnSubmit()
     {
         if (player == null || doingAction || resetCooldown > 0f)
             return;
 
         StartCoroutine(DoAction(player));
+    }
+
+    void OnNavigation(InputValue value)
+    {
+        int v = (int)value.Get<float>();
+
+        curIndex = (curIndex + v) % actions.Count;
+        if (curIndex < 0)
+        {
+            curIndex = actions.Count - 1;
+        }
+
+        UpdateText();
     }
 
     void OnTriggerEnter(Collider other)
