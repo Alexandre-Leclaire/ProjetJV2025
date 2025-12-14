@@ -86,8 +86,11 @@ public class ActionBox : MonoBehaviour
         StartCoroutine(DoAction(player));
     }
 
-    void OnNavigation(InputValue value)
+    void OnNavigate(InputValue value)
     {
+        if (player == null || doingAction || resetCooldown > 0f)
+            return;
+
         int v = (int)value.Get<float>();
 
         curIndex = (curIndex + v) % actions.Count;
@@ -122,8 +125,12 @@ public class ActionBox : MonoBehaviour
         input.enabled = false;
         player = null;
 
-        StopAllCoroutines();
-        doingAction = false;
+        if (actions[curIndex].cancelOnLeave)
+        {
+            StopAllCoroutines();
+            doingAction = false;
+            resetCooldown = actions[curIndex].resetCooldown;
+        }
     }
 
     void LookAtCamera()

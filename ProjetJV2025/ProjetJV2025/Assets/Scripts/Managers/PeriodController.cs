@@ -4,8 +4,8 @@ using System.Collections.Generic;
 
 public class PeriodController : MonoBehaviour
 {
-    [Header("Spawners")]
-    public List<ResourceSpawner> spawners;
+    //[Header("Spawners")]
+    private ResourceSpawner[] spawners;
 
     [Header("Period settings")]
     public float periodDuration = 120f;
@@ -16,6 +16,8 @@ public class PeriodController : MonoBehaviour
     {
         ResourceType[] periods = (ResourceType[])System.Enum.GetValues(typeof(ResourceType));
         CurrentPeriod = periods[Random.Range(0, periods.Length)];
+
+        spawners = FindObjectsByType<ResourceSpawner>(FindObjectsSortMode.None);
 
         StartCoroutine(Cycle());
     }
@@ -51,7 +53,7 @@ public class PeriodController : MonoBehaviour
 
     void ApplyCurrentPeriod()
     {
-        int total = spawners.Count;
+        int total = spawners.Length;
 
         int dominantCount = Mathf.RoundToInt(total * 0.50f);
         int secondaryCount = Mathf.RoundToInt(total * 0.35f);
@@ -73,7 +75,7 @@ public class PeriodController : MonoBehaviour
 
         Shuffle(distribution);
 
-        for (int i = 0; i < spawners.Count; i++)
+        for (int i = 0; i < spawners.Length; i++)
         {
             spawners[i].Spawn(distribution[i].ToString());
         }
