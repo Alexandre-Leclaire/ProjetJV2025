@@ -12,9 +12,10 @@ public class Enemie : MonoBehaviour, IAiEntity, IDamageable
     [SerializeField] private int damage;
     [SerializeField] public int hp;
     [SerializeField] private GameObject player;
-    [SerializeField] private BulletMovement bulletPrefab;
     [SerializeField] private GameObject laserObject;
-    
+    [SerializeField] private ParticleSystem muzzleFlash;
+    [SerializeField] private ParticleSystem explosion;
+
     private Vector3 startPosition;
 
     public NavMeshAgent Agent { get; private set; }
@@ -46,6 +47,7 @@ public class Enemie : MonoBehaviour, IAiEntity, IDamageable
 
     void IDamageable.TakeDamage(int damageTaken)
     {
+        Instantiate(explosion, transform.position, Quaternion.identity);
         hp -= damageTaken;
         if (hp <= 0)
         {
@@ -143,8 +145,14 @@ public class Enemie : MonoBehaviour, IAiEntity, IDamageable
         {
             if (shootTimer <= 0)
             {
-                BulletMovement bullet = Instantiate(entity.bulletPrefab, entity.transform.position + entity.transform.forward, entity.transform.rotation);
-                bullet.Init(10, entity.shootRange, entity.damage);
+                entity.muzzleFlash.Emit(1);
+                if (Physics.Raycast(entity.transform.position, entity.transform.forward, out var hit, entity.shootRange))
+                {
+                    if (hit.collider.gameObject.TryGetComponent<IDamageable>(out var damageable))
+                    {
+                        damageable.TakeDamage(entity.damage);
+                    }
+                }
                 
                 entity.Agent.isStopped = false;
 

@@ -51,14 +51,6 @@ public class ActionBox : MonoBehaviour
         canvas.SetActive(false);
         curIndex = 0;
         UpdateText();
-
-        PlaceCanvas();
-    }
-
-    void PlaceCanvas()
-    {
-        canvas.transform.localPosition = new Vector3(0f, 1.2f, 0f);
-        canvas.transform.localRotation = Quaternion.identity;
     }
 
     void Update()
@@ -68,12 +60,23 @@ public class ActionBox : MonoBehaviour
             bottomText.text = $"Usable in {(int)resetCooldown}s...";
             resetCooldown -= Time.deltaTime;
         }
-
-        // INPUT SIMPLE POUR TEST / GAMEPLAY
-        if (player != null && Input.GetKeyDown(KeyCode.E))
+        else
         {
-            OnSubmit();
+            bottomText.text = "C";
         }
+    }
+
+    void OnNavigate(InputValue value)
+    {
+        int v = (int)value.Get<float>();
+        
+        curIndex = (curIndex + v) % actions.Count;
+        if (curIndex < 0)
+        {
+            curIndex = actions.Count - 1; 
+        }
+
+        UpdateText();
     }
 
     void OnSubmit()
@@ -94,11 +97,7 @@ public class ActionBox : MonoBehaviour
         input.enabled = true;
         canvas.SetActive(true);
 
-        // Canvas toujours face caméra
-        canvas.transform.LookAt(
-            canvas.transform.position + Camera.main.transform.rotation * Vector3.forward,
-            Camera.main.transform.rotation * Vector3.up
-        );
+        canvas.transform.LookAt(Camera.main.transform);
     }
 
     void OnTriggerExit(Collider other)
@@ -133,9 +132,9 @@ public class ActionBox : MonoBehaviour
             }
 
             action.onInteractionFinish(player);
+            resetCooldown = action.resetCooldown;
         }
-
-        resetCooldown = action.resetCooldown;
+        
         doingAction = false;
     }
 
