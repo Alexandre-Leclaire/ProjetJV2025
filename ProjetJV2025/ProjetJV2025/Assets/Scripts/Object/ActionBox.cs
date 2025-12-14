@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,6 +7,7 @@ using TMPro;
 [RequireComponent(typeof(PlayerInput))]
 public class ActionBox : MonoBehaviour
 {
+    [Header("UI")]
     [SerializeField] private GameObject canvas;
     [SerializeField] private TMP_Text actionNameText;
     [SerializeField] private TMP_Text bottomText;
@@ -14,17 +15,21 @@ public class ActionBox : MonoBehaviour
     int curIndex;
     bool doingAction;
     float resetCooldown;
+
     GameObject player;
     PlayerInput input;
 
     IActionnable actionnable;
     List<IActionnable.Element> actions;
 
+    string idleMessage = "Press E to interact";
+    Coroutine messageRoutine;
+
     void Start()
     {
         if (canvas == null || actionNameText == null || bottomText == null)
         {
-            Debug.LogError($"ActionBox ({name}) : r�f�rences UI manquantes");
+            Debug.LogError($"ActionBox ({name}) : références UI manquantes");
             enabled = false;
             return;
         }
@@ -32,7 +37,7 @@ public class ActionBox : MonoBehaviour
         actionnable = GetComponent<IActionnable>();
         if (actionnable == null)
         {
-            Debug.LogError($"ActionBox ({name}) : aucun composant IActionnable trouv�");
+            Debug.LogError($"ActionBox ({name}) : aucun composant IActionnable trouvé");
             enabled = false;
             return;
         }
@@ -40,7 +45,7 @@ public class ActionBox : MonoBehaviour
         actions = actionnable.GetActions();
         if (actions == null || actions.Count == 0)
         {
-            Debug.LogError($"ActionBox ({name}) : aucune action d�finie");
+            Debug.LogError($"ActionBox ({name}) : aucune action définie");
             enabled = false;
             return;
         }
@@ -51,7 +56,6 @@ public class ActionBox : MonoBehaviour
         canvas.SetActive(false);
         curIndex = 0;
         UpdateText();
-
         PlaceCanvas();
     }
 
@@ -65,23 +69,22 @@ public class ActionBox : MonoBehaviour
     {
         if (resetCooldown > 0f)
         {
-            bottomText.text = $"Usable in {(int)resetCooldown}s...";
             resetCooldown -= Time.deltaTime;
+            bottomText.text = $"Usable in {(int)resetCooldown}s...";
+            return;
         }
 
-        // INPUT SIMPLE POUR TEST / GAMEPLAY
         if (player != null && Input.GetKeyDown(KeyCode.E))
         {
-            OnSubmit();
+            TrySubmit();
         }
     }
 
-    void OnSubmit()
+    void TrySubmit()
     {
         if (player == null || doingAction || resetCooldown > 0f)
             return;
 
-        doingAction = true;
         StartCoroutine(DoAction(player));
     }
 
@@ -92,13 +95,11 @@ public class ActionBox : MonoBehaviour
 
         player = other.gameObject;
         input.enabled = true;
-        canvas.SetActive(true);
 
-        // Canvas toujours face cam�ra
-        canvas.transform.LookAt(
-            canvas.transform.position + Camera.main.transform.rotation * Vector3.forward,
-            Camera.main.transform.rotation * Vector3.up
-        );
+        canvas.SetActive(true);
+        LookAtCamera();
+
+        bottomText.text = idleMessage;
     }
 
     void OnTriggerExit(Collider other)
@@ -110,33 +111,66 @@ public class ActionBox : MonoBehaviour
         input.enabled = false;
         player = null;
 
-        if (doingAction && actions[curIndex].cancelOnLeave)
-        {
-            doingAction = false;
-            resetCooldown = actions[curIndex].resetCooldown;
-            StopAllCoroutines();
-        }
+        StopAllCoroutines();
+        doingAction = false;
+        messageRoutine = null;
+    }
+
+    void LookAtCamera()
+    {
+        canvas.transform.LookAt(
+            canvas.transform.position + Camera.main.transform.rotation * Vector3.forward,
+            Camera.main.transform.rotation * Vector3.up
+        );
     }
 
     IEnumerator DoAction(GameObject player)
     {
+        doingAction = true;
         IActionnable.Element action = actions[curIndex];
 
-        if (action.onInteract(player))
+        // ❌ FAIL → DEBUG ONLY
+        if (!action.onInteract(player))
         {
-            float time = action.interactionTime;
-            while (time > 0f)
-            {
-                bottomText.text = $"Finish in {(int)time}s...";
-                time -= Time.deltaTime;
-                yield return null;
-            }
+            Debug.LogWarning(
+                $"[ActionBox] Craft failed on '{name}' : not enough resources for '{action.name}'"
+            );
 
-            action.onInteractionFinish(player);
+            doingAction = false;
+            yield break;
         }
+
+        // ⏳ Timer
+        float time = action.interactionTime;
+        while (time > 0f)
+        {
+            bottomText.text = $"Finish in {(int)time}s...";
+            time -= Time.deltaTime;
+            yield return null;
+        }
+
+        // ✅ SUCCESS
+        action.onInteractionFinish(player);
+        ShowTemporaryMessage("✅ Craft successful", 2f);
 
         resetCooldown = action.resetCooldown;
         doingAction = false;
+    }
+
+    void ShowTemporaryMessage(string msg, float duration)
+    {
+        if (messageRoutine != null)
+            StopCoroutine(messageRoutine);
+
+        messageRoutine = StartCoroutine(TemporaryMessageRoutine(msg, duration));
+    }
+
+    IEnumerator TemporaryMessageRoutine(string msg, float duration)
+    {
+        bottomText.text = msg;
+        yield return new WaitForSeconds(duration);
+        bottomText.text = idleMessage;
+        messageRoutine = null;
     }
 
     void UpdateText()

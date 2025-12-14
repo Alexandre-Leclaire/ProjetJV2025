@@ -15,6 +15,13 @@ public class Inventory : MonoBehaviour
             items.Add(new Item(id, qty));
     }
 
+    public int GetQuantity(string id)
+    {
+        Item it = items.Find(i => i.id == id);
+        return it != null ? it.quantity : 0;
+    }
+
+
     public bool Has(string id, int qty)
     {
         Item item = items.Find(i => i.id == id);

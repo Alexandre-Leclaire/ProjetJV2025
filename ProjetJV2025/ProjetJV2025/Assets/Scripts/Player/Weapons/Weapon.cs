@@ -3,71 +3,111 @@ using UnityEngine;
 
 public abstract class Weapon : MonoBehaviour
 {
+    [Header("Data")]
     public WeaponData weaponData;
-    
-    public int currentAmmo = 0;
-    private float nextTimetoFire = 0f;
-    private bool isReloading = false;
-    
+
+    [Header("Runtime")]
+    public int currentAmmo;
+
+    float nextTimeToFire;
+    bool isReloading;
+
+    [Header("FX")]
     public ParticleSystem muzzleFlash;
     public ParticleSystem hitEffect;
     public TrailRenderer tracerEffect;
 
+    [Header("Visuals")]
     public Transform gunLookAt;
     public GameObject laser;
-    
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+
+    protected Inventory inventory;
+
     void Start()
     {
+        inventory = GetComponentInParent<Inventory>();
+        if (inventory == null)
+        {
+            Debug.LogError($"[Weapon] No Inventory found in parent for {name}");
+        }
+
         currentAmmo = weaponData.magazineSize;
     }
 
     public virtual void Update()
     {
-        
-    }
 
-    public void TryReload()
-    {
-        if (!isReloading && currentAmmo < weaponData.magazineSize)
-        {
-            StartCoroutine(Reload());
-        }
-    }
-
-    private IEnumerator Reload()
-    {
-        isReloading = true;
-        Debug.Log("Reloading...");
-        yield return new WaitForSeconds(weaponData.reloadTime);
-        
-        currentAmmo = weaponData.magazineSize;
-        isReloading = false;
-        
-        Debug.Log("Reload complete");
     }
 
     public void TryShoot()
     {
-        if (isReloading || currentAmmo <= 0f)
+        if (isReloading)
+            return;
+
+        if (currentAmmo <= 0)
         {
+            TryReload();
             return;
         }
-        else if (Time.time >= nextTimetoFire && Input.GetMouseButton(1))
-        {
-            nextTimetoFire = Time.time + (1 / weaponData.rateOfFire);
-            HandleShoot();
-        }
+
+        if (Time.time < nextTimeToFire)
+            return;
+
+        if (!Input.GetMouseButton(1))
+            return;
+
+        nextTimeToFire = Time.time + (1f / weaponData.rateOfFire);
+        ShootInternal();
     }
 
-    private void HandleShoot()
+    void ShootInternal()
     {
         currentAmmo--;
-        muzzleFlash.Emit(1);
-        Debug.Log("Current Ammo: " + currentAmmo);
+
+        if (muzzleFlash != null)
+            muzzleFlash.Emit(1);
+
         Shoot();
     }
 
-    public abstract void Shoot();
+    public void TryReload()
+    {
+        if (isReloading)
+            return;
 
+        if (currentAmmo >= weaponData.magazineSize)
+            return;
+
+        if (inventory == null || !inventory.Has("Ammo", 1))
+        {
+            Debug.Log("[Weapon] No ammo in inventory");
+            return;
+        }
+
+        StartCoroutine(Reload());
+    }
+
+    IEnumerator Reload()
+    {
+        isReloading = true;
+        Debug.Log("[Weapon] Reloading...");
+
+        yield return new WaitForSeconds(weaponData.reloadTime);
+
+        int ammoNeeded = weaponData.magazineSize - currentAmmo;
+        int ammoAvailable = inventory.GetQuantity("Ammo");
+        int ammoToLoad = Mathf.Min(ammoNeeded, ammoAvailable);
+
+        if (ammoToLoad > 0)
+        {
+            inventory.Remove("Ammo", ammoToLoad);
+            currentAmmo += ammoToLoad;
+        }
+
+        isReloading = false;
+
+        Debug.Log($"[Weapon] Reload complete ({currentAmmo}/{weaponData.magazineSize})");
+    }
+
+    public abstract void Shoot();
 }

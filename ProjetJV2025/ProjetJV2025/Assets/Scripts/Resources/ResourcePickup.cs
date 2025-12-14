@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class ResourcePickup : MonoBehaviour
@@ -25,5 +26,7 @@ public class ResourcePickup : MonoBehaviour
         inv.Add(resourceId, amount);
         spawner.OnCollected();
         Destroy(gameObject);
+        Debug.Log($"[ResourcePickup] Collected {amount} x {resourceId}");
+
     }
 }

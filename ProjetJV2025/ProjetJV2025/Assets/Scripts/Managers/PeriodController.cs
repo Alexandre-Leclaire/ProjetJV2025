@@ -1,14 +1,22 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
 public class PeriodController : MonoBehaviour
 {
+    [Header("Spawners")]
     public List<ResourceSpawner> spawners;
+
+    [Header("Period settings")]
     public float periodDuration = 120f;
+
+    public ResourceType CurrentPeriod { get; private set; }
 
     void Start()
     {
+        ResourceType[] periods = (ResourceType[])System.Enum.GetValues(typeof(ResourceType));
+        CurrentPeriod = periods[Random.Range(0, periods.Length)];
+
         StartCoroutine(Cycle());
     }
 
@@ -16,30 +24,93 @@ public class PeriodController : MonoBehaviour
     {
         while (true)
         {
-            ApplyDistribution(ResourceType.Food);
+            ApplyCurrentPeriod();
             yield return new WaitForSeconds(periodDuration);
 
-            ApplyDistribution(ResourceType.Cloth);
-            yield return new WaitForSeconds(periodDuration);
-
-            ApplyDistribution(ResourceType.Metal);
-            yield return new WaitForSeconds(periodDuration);
+            GoToNextPeriod();
         }
     }
 
-    void ApplyDistribution(ResourceType dominant)
+    void GoToNextPeriod()
     {
-        foreach (var s in spawners)
+        switch (CurrentPeriod)
         {
-            float r = Random.value;
+            case ResourceType.Food:
+                CurrentPeriod = ResourceType.Cloth;
+                break;
 
-            string id =
-                r < 0.6f ? dominant.ToString() :
-                r < 0.8f ? "Cloth" :
-                           "Metal";
+            case ResourceType.Cloth:
+                CurrentPeriod = ResourceType.Metal;
+                break;
 
-            s.Spawn(id);
+            case ResourceType.Metal:
+                CurrentPeriod = ResourceType.Food;
+                break;
         }
     }
 
+    void ApplyCurrentPeriod()
+    {
+        int total = spawners.Count;
+
+        int dominantCount = Mathf.RoundToInt(total * 0.50f);
+        int secondaryCount = Mathf.RoundToInt(total * 0.35f);
+        int rareCount = total - dominantCount - secondaryCount;
+
+        ResourceType secondary = GetSecondary(CurrentPeriod);
+        ResourceType rare = GetRare(CurrentPeriod);
+
+        List<ResourceType> distribution = new List<ResourceType>();
+
+        for (int i = 0; i < dominantCount; i++)
+            distribution.Add(CurrentPeriod);
+
+        for (int i = 0; i < secondaryCount; i++)
+            distribution.Add(secondary);
+
+        for (int i = 0; i < rareCount; i++)
+            distribution.Add(rare);
+
+        Shuffle(distribution);
+
+        for (int i = 0; i < spawners.Count; i++)
+        {
+            spawners[i].Spawn(distribution[i].ToString());
+        }
+
+        Debug.Log($"[PeriodController] New period: {CurrentPeriod}");
+    }
+
+    void Shuffle(List<ResourceType> list)
+    {
+        for (int i = 0; i < list.Count; i++)
+        {
+            int j = Random.Range(i, list.Count);
+            ResourceType temp = list[i];
+            list[i] = list[j];
+            list[j] = temp;
+        }
+    }
+
+    ResourceType GetSecondary(ResourceType dominant)
+    {
+        switch (dominant)
+        {
+            case ResourceType.Food: return ResourceType.Cloth;
+            case ResourceType.Cloth: return ResourceType.Metal;
+            case ResourceType.Metal: return ResourceType.Food;
+            default: return ResourceType.Food;
+        }
+    }
+
+    ResourceType GetRare(ResourceType dominant)
+    {
+        switch (dominant)
+        {
+            case ResourceType.Food: return ResourceType.Metal;
+            case ResourceType.Cloth: return ResourceType.Food;
+            case ResourceType.Metal: return ResourceType.Cloth;
+            default: return ResourceType.Metal;
+        }
+    }
 }

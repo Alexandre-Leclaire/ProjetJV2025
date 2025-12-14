@@ -8,10 +8,10 @@ public class ResourceCubeColor : MonoBehaviour
 
         rend.material.color = resourceId switch
         {
-            "Food" => Color.green,
-            "Cloth" => Color.cyan,
-            "Metal" => Color.gray,
-            _ => Color.white
+            "Food" => Color.red,
+            "Cloth" => Color.white,
+            "Metal" => Color.black,
+            _ => Color.blue
         };
     }
 }
