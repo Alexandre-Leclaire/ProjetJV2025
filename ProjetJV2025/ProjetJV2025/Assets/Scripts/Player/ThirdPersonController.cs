@@ -5,6 +5,7 @@
  using Random = UnityEngine.Random;
 using System.Collections.Generic;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 
 #if ENABLE_INPUT_SYSTEM
@@ -112,6 +113,10 @@ namespace StarterAssets
         private bool _hasAnimator;
         
         private Vector2 input;
+
+        public GameObject mainUI;
+        public GameObject endScreenUI;
+        public Texture2D cursorCrosshair;
         
         private void Awake()
         {
@@ -120,6 +125,7 @@ namespace StarterAssets
             {
                 _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
             }
+            Cursor.SetCursor(cursorCrosshair, Vector2.zero, CursorMode.Auto);
             health = 100;
         }
 
@@ -153,15 +159,18 @@ namespace StarterAssets
 
         private void Update()
         {
-            _hasAnimator = TryGetComponent(out _animator);
-        
-            //JumpAndGravity();
-            GroundedCheck();
-            Move();
-
             if (health <= 0)
             {
-                Destroy(this.gameObject);
+                mainUI.SetActive(false);
+                endScreenUI.SetActive(true);
+            }
+            else
+            {
+                _hasAnimator = TryGetComponent(out _animator);
+        
+                //JumpAndGravity();
+                GroundedCheck();
+                Move();
             }
         }
 
